@@ -1,0 +1,54 @@
+#Activiate libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+ 
+#Create a sample of 100 random integers from 0 to 10,
+#then record and normalize their frequencies to generate
+#a PMF
+sample = np.random.random_integers(0, 10, 100)
+integers, counts = np.unique(sample, return_counts = True)
+pmf = counts/len(sample)
+ 
+#Graph the PMF of our sample
+plt.title('PMF of Randomly Generated Integers')
+plt.bar(integers, pmf)
+plt.ylabel('Probability of Selecting Integer')
+plt.xlabel('Avaialble Integers')
+
+#generate 10,000 numbers from the normal distribution
+sample = np.random.randn(10000)
+ 
+#Custom function to check whether a randomly generated number from the 
+#normal distribution will equal the values within our simulated normal distribution
+def a_very_bad_time(X, trials):
+    population = set(X)
+     
+    for test in range(trials):
+        seek = np.random.randn(1)
+        if float(seek) in population:
+            print('Success!')
+            break
+        else:
+            continue
+    print(f'Oh no! Catastrophe! No success in {trials} trials!')
+ 
+#Loop for simulated n trials
+trials = [100, 1000, 10000, 100000, 1000000, 100000000]
+for i in trials:
+    a_very_bad_time(sample, i)
+    
+#Create a large sample from a standard normal distribution, convert to Pandas series
+sample = np.random.randn(10000);
+sample = pd.Series(sample);
+ 
+#Note:  We're transforming this Numpy series into a Pandas series
+#because Pandas has native support for plotting a PDF
+ 
+#Plot histogram and KDE w/ Pandas
+plt.figure(figsize = [10,10])
+plt.title('PDF of Normal Distribution')
+sample.plot.hist(bins = 50, normed=True, label = 'Normalized Histogram')
+sample.plot.kde(color ='b', label = 'PDF')
+plt.legend()
