@@ -1,0 +1,50 @@
+class Dice():
+    def __init__(self, n_sides, fair):
+        import random
+        self.n = n_sides
+        self.sides = list(range(1,(self.n + 1)))
+         
+        #This section will create our PMF, depending on whether the die is fair or not.
+        #Note that the bias is a fxn of total sides, where the limit of the bias approaches zero
+        #as the number of sides on the die becomes arbitrarily large.
+        odds = []
+        if fair == True:
+            for i in self.sides:
+                odds.append(1/n_sides)
+        else:
+            bias = ((n_sides + 1)/n_sides**2)
+            r = (1 - bias)/(n_sides - 1)
+            for i in self.sides:
+                odds.append(r)
+            bias_index = random.randint(0, (n_sides)-1)
+            odds[bias_index] = bias
+        self.odds = odds
+             
+    def roll(self):
+        return random.choices(self.sides, self.odds)[0]
+        
+ fig, axes = plt.subplots(4, 2, figsize = (20, 30), sharey = True)
+rolls = [10, 100, 1000, 10000]
+ 
+for tries in rolls:
+    fair_rolls = []
+    unfair_rolls = []
+     
+    for i in range(tries):
+        fair_rolls.append(fair.roll())
+        unfair_rolls.append(unfair.roll())
+         
+    fair_results = np.unique(fair_rolls, return_counts = True)
+    unfair_results = np.unique(unfair_rolls, return_counts = True)
+     
+    ax1, ax2 = axes[rolls.index(tries)]
+         
+    ax1.bar(x = fair_results[0], height = fair_results[1]/tries, label = 'Observed Probability')
+    ax1.plot(fair.sides, fair.odds, label = "Expected probability", color = 'blue')
+    ax1.set_title(f'PMF of a Fair Die w/ {tries} rolls')
+    ax1.legend()
+     
+    ax2.bar(x = unfair_results[0], height = unfair_results[1]/tries, label = 'Observed Probability')
+    ax2.plot(unfair.sides, unfair.odds, label = "Expected probability", color = 'blue')
+    ax2.set_title(f'PMF of an Unfair Die w/ {tries} rolls')
+    ax2.legend()
